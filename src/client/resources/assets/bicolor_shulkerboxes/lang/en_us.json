@@ -1,0 +1,21 @@
+{
+  "bicolor_shulkerboxes.shell": "Shulker Shell: %s",
+  "bicolor_shulkerboxes.colors": "Lid: %s | Base: %s",
+  "bicolor_shulkerboxes.color.natural": "natural",
+  "bicolor_shulkerboxes.color.white": "white",
+  "bicolor_shulkerboxes.color.orange": "orange",
+  "bicolor_shulkerboxes.color.magenta": "magenta",
+  "bicolor_shulkerboxes.color.light_blue": "light blue",
+  "bicolor_shulkerboxes.color.yellow": "yellow",
+  "bicolor_shulkerboxes.color.lime": "lime",
+  "bicolor_shulkerboxes.color.pink": "pink",
+  "bicolor_shulkerboxes.color.gray": "gray",
+  "bicolor_shulkerboxes.color.light_gray": "light gray",
+  "bicolor_shulkerboxes.color.cyan": "cyan",
+  "bicolor_shulkerboxes.color.purple": "purple",
+  "bicolor_shulkerboxes.color.blue": "blue",
+  "bicolor_shulkerboxes.color.brown": "brown",
+  "bicolor_shulkerboxes.color.green": "green",
+  "bicolor_shulkerboxes.color.red": "red",
+  "bicolor_shulkerboxes.color.black": "black"
+}

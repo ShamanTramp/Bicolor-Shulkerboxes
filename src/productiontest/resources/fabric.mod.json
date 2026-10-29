@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "id": "bicolor_shulkerboxes_test",
+  "version": "1.0.0",
+  "name": "Bicolor Production Client Tests",
+  "environment": "client",
+  "entrypoints": { "fabric-client-gametest": ["dev.shaman.bicolor.BicolorClientTests"] }
+}

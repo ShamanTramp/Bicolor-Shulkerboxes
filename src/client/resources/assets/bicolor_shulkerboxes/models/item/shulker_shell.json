@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "bicolor_shulkerboxes:item/shulker_shell"
+  }
+}

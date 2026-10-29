@@ -1,0 +1,34 @@
+{
+  "criteria": {
+    "has_shell": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:shulker_shell"
+          }
+        ]
+      }
+    }
+  },
+  "rewards": {
+    "recipes": [
+      "bicolor_shulkerboxes:white_shell",
+      "bicolor_shulkerboxes:orange_shell",
+      "bicolor_shulkerboxes:magenta_shell",
+      "bicolor_shulkerboxes:light_blue_shell",
+      "bicolor_shulkerboxes:yellow_shell",
+      "bicolor_shulkerboxes:lime_shell",
+      "bicolor_shulkerboxes:pink_shell",
+      "bicolor_shulkerboxes:gray_shell",
+      "bicolor_shulkerboxes:light_gray_shell",
+      "bicolor_shulkerboxes:cyan_shell",
+      "bicolor_shulkerboxes:purple_shell",
+      "bicolor_shulkerboxes:blue_shell",
+      "bicolor_shulkerboxes:brown_shell",
+      "bicolor_shulkerboxes:green_shell",
+      "bicolor_shulkerboxes:red_shell",
+      "bicolor_shulkerboxes:black_shell"
+    ]
+  }
+}

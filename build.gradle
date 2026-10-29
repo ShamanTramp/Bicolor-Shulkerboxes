@@ -1,0 +1,68 @@
+plugins { id 'net.fabricmc.fabric-loom-remap' version '1.14.10' }
+version = project.mod_version
+group = project.maven_group
+base { archivesName = project.archives_base_name }
+repositories { mavenCentral() }
+loom {
+    splitEnvironmentSourceSets()
+    mods { bicolor_shulkerboxes { sourceSet sourceSets.main; sourceSet sourceSets.client } }
+}
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings loom.officialMojangMappings()
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+    testImplementation "net.fabricmc:fabric-loader-junit:${project.loader_version}"
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.12.2'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+fabricApi { configureTests { createSourceSet = true; modId = 'bicolor_shulkerboxes_test'; enableGameTests = true; enableClientGameTests = true } }
+processResources { inputs.property 'version', project.version; filesMatching('fabric.mod.json') { expand version: project.version } }
+tasks.withType(JavaCompile).configureEach { options.release = 21 }
+test { useJUnitPlatform() }
+java { sourceCompatibility = JavaVersion.VERSION_21; targetCompatibility = JavaVersion.VERSION_21 }
+jar { from('LICENSE') }
+
+// These test-only artifacts stay outside the directory containing the one distributable mod.
+tasks.register('gameTestJar', Jar) {
+    from(sourceSets.gametest.output) { exclude 'fabric.mod.json', '**/BicolorGameTests*' }
+    from 'src/productiontest/resources'
+    archiveClassifier = 'gametest-dev'
+    destinationDirectory = layout.buildDirectory.dir('testmods')
+}
+tasks.register('remapGameTestJar', net.fabricmc.loom.task.RemapJarTask) {
+    dependsOn tasks.named('gameTestJar')
+    inputFile = tasks.named('gameTestJar').flatMap { it.archiveFile }
+    archiveClassifier = 'gametest'
+    destinationDirectory = layout.buildDirectory.dir('testmods')
+    classpath.from sourceSets.gametest.compileClasspath
+}
+dependencies {
+    productionRuntimeMods "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+    productionRuntimeMods 'net.fabricmc.fabric-api:fabric-client-gametest-api-v1:4.3.5+bfe9fcf43e'
+}
+tasks.register('runProductionClientGameTest', net.fabricmc.loom.task.prod.ClientProductionRunTask) {
+    mods.from tasks.named('remapJar'), tasks.named('remapGameTestJar')
+    jvmArgs.add('-Dfabric.client.gametest')
+    jvmArgs.add('-Dfabric.client.gametest.disableNetworkSynchronizer=true')
+    runDir = layout.buildDirectory.dir('run/productionClientGameTest')
+}
+// Production run directories are reused by Loom; remove obsolete test libraries before copying this run's mods.
+tasks.named('runProductionClientGameTest') {
+    doFirst { delete fileTree(layout.buildDirectory.dir('run/productionClientGameTest/mods')) { include '*.jar' } }
+}
+tasks.named('runProductionClientGameTest') {
+    jvmArgs.add("-Dbicolor.projectDir=${project.projectDir}")
+    doFirst {
+        def eula = file('build/run/productionClientGameTest/eula.txt')
+        eula.parentFile.mkdirs()
+        eula.text = 'eula=true\n'
+    }
+}
+tasks.register('runProductionVanillaClientGameTest', net.fabricmc.loom.task.prod.ClientProductionRunTask) {
+    mods.from tasks.named('remapJar'), tasks.named('remapGameTestJar')
+    jvmArgs.add('-Dfabric.client.gametest')
+    jvmArgs.add('-Dfabric.client.gametest.disableNetworkSynchronizer=true')
+    jvmArgs.add('-Dbicolor.externalVanillaPort=25577')
+    runDir = layout.buildDirectory.dir('run/vanillaServerClientGameTest')
+}

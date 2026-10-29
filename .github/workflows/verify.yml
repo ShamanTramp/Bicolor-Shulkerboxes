@@ -1,0 +1,62 @@
+name: Verify Minecraft 1.21.11
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      LIBGL_ALWAYS_SOFTWARE: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: tests/vanilla/package-lock.json
+      - name: Prepare headless graphics
+        run: sudo apt-get update && sudo apt-get install -y xvfb libgl1-mesa-dri libglx-mesa0
+      - name: Install the test-only vanilla client
+        working-directory: tests/vanilla
+        run: npm ci --ignore-scripts
+      - name: Check generated resources
+        run: |
+          python3 tools/generate_resources.py
+          git diff --exit-code -- src/main/resources src/client/resources
+      - name: Build, unit tests and server GameTests
+        run: ./gradlew build --no-daemon
+      - name: Production client, textures, persistence and mixed players
+        run: ./gradlew runProductionClientGameTest --no-daemon
+      - name: Vanilla protocol client and full server restart
+        run: python3 tools/vanilla_smoke.py
+      - name: Modded client on an actual vanilla server
+        run: python3 tools/vanilla_server_client.py
+      - name: Store the single distributable mod
+        uses: actions/upload-artifact@v4
+        with:
+          name: bicolor-shulkerboxes-minecraft-1.21.11
+          path: build/libs/bicolor-shulkerboxes-*.jar
+          if-no-files-found: error
+      - name: Store reports and screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: verification-reports
+          path: |
+            build/reports/
+            build/test-results/
+            build/run/**/screenshots/
+            build/run/**/logs/
+            build/run/**/vanilla-guest.log
+            build/vanilla-smoke/*-server.log
+            build/vanilla-smoke/*-probe.log
+            build/vanilla-smoke/report.json
+            build/vanilla-server-client/server.log

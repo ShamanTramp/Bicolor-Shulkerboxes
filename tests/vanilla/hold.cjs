@@ -1,0 +1,10 @@
+const mineflayer = require('mineflayer')
+const bot = mineflayer.createBot({ host: '127.0.0.1', port: Number(process.argv[2]), username: 'VanillaGuest', auth: 'offline', version: '1.21.11' })
+bot.on('error', error => { console.error(error); process.exit(1) })
+bot.on('kicked', reason => { console.error(reason); process.exit(1) })
+bot.once('spawn', async () => {
+  await bot.waitForChunksToLoad()
+  bot._client.write('player_loaded', {})
+  console.log('Vanilla guest connected without Fabric or mod')
+})
+setTimeout(() => { bot.quit(); process.exit(1) }, 120000)

@@ -1,0 +1,14 @@
+{
+  "jar_sha256": "bea26f18fb0e2d13882f568b3e20546a83c576772ffe25050eadb195bc879c6e",
+  "client": "Mineflayer 4.37.1; vanilla protocol 1.21.11; no Fabric or mod",
+  "phases": [
+    {
+      "phase": "create",
+      "passed": true
+    },
+    {
+      "phase": "restart",
+      "passed": true
+    }
+  ]
+}

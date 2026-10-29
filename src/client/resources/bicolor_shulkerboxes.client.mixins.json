@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "dev.shaman.bicolor.client.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "ShulkerSpecialModelMixin",
+    "ShellItemModelMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

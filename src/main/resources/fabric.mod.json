@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "id": "bicolor_shulkerboxes",
+  "version": "${version}",
+  "name": "Bicolor Shulkerboxes",
+  "description": "Colored shells and two-tone shulker boxes. Optional on clients.",
+  "authors": [
+    "ShamanTramp"
+  ],
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "dev.shaman.bicolor.BicolorShulkerboxes"
+    ],
+    "client": [
+      "dev.shaman.bicolor.client.BicolorClient"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.18.4",
+    "minecraft": "1.21.11",
+    "java": ">=21",
+    "fabric-api": "*"
+  },
+  "mixins": [
+    "bicolor_shulkerboxes.mixins.json",
+    {
+      "config": "bicolor_shulkerboxes.client.mixins.json",
+      "environment": "client"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+.gradle/
+build/
+run/
+runs/
+.idea/
+*.iml
+.tools/
+node_modules
+logs/
+__pycache__/
+*.pyc

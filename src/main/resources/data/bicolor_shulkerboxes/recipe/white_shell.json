@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "bicolor_shulkerboxes:shell_dye",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:shulker_shell",
+    "minecraft:white_dye"
+  ],
+  "result": {
+    "id": "minecraft:shulker_shell",
+    "components": {
+      "minecraft:custom_data": {
+        "bicolor_shulkerboxes": {
+          "version": 1,
+          "kind": "shell",
+          "color": "white"
+        }
+      },
+      "minecraft:item_name": {
+        "translate": "bicolor_shulkerboxes.shell",
+        "fallback": "Shulker shell / Carapace: %s",
+        "with": [
+          {
+            "translate": "bicolor_shulkerboxes.color.white",
+            "fallback": "white / blanc"
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "package": "dev.shaman.bicolor.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "ShellDyeRecipeMixin",
+    "BoxAssemblyRecipeMixin",
+    "BoxRecolorRecipeMixin",
+    "ShulkerBoxDataMixin",
+    "ShulkerBoxDropsMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

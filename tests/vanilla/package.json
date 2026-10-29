@@ -1,0 +1,13 @@
+{
+  "name": "bicolor-vanilla-smoke",
+  "version": "1.0.0",
+  "description": "Test-only vanilla protocol probe; never bundled with the mod",
+  "license": "MIT",
+  "dependencies": {
+    "mineflayer": "4.37.1"
+  },
+  "private": true,
+  "engines": {
+    "node": ">=22"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "bicolor_shulkerboxes.shell": "Carapace de Shulker : %s",
+  "bicolor_shulkerboxes.colors": "Couvercle : %s | Base : %s",
+  "bicolor_shulkerboxes.color.natural": "naturelle",
+  "bicolor_shulkerboxes.color.white": "blanc",
+  "bicolor_shulkerboxes.color.orange": "orange",
+  "bicolor_shulkerboxes.color.magenta": "magenta",
+  "bicolor_shulkerboxes.color.light_blue": "bleu clair",
+  "bicolor_shulkerboxes.color.yellow": "jaune",
+  "bicolor_shulkerboxes.color.lime": "vert clair",
+  "bicolor_shulkerboxes.color.pink": "rose",
+  "bicolor_shulkerboxes.color.gray": "gris",
+  "bicolor_shulkerboxes.color.light_gray": "gris clair",
+  "bicolor_shulkerboxes.color.cyan": "cyan",
+  "bicolor_shulkerboxes.color.purple": "violet",
+  "bicolor_shulkerboxes.color.blue": "bleu",
+  "bicolor_shulkerboxes.color.brown": "marron",
+  "bicolor_shulkerboxes.color.green": "vert",
+  "bicolor_shulkerboxes.color.red": "rouge",
+  "bicolor_shulkerboxes.color.black": "noir"
+}
