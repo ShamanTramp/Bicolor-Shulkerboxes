@@ -4,6 +4,26 @@ A Fabric mod for **Minecraft Java 1.21.11**. Dye shulker shells, then combine tw
 
 **One identical JAR for servers, clients and singleplayer. Installing it on multiplayer clients is optional.** Players without the mod can join, craft and use the boxes; they see a vanilla box in its base color, with a tooltip describing both colors.
 
+## Preview
+
+### Bicolor boxes in the world
+
+Choose the lid and base independently. The colors follow the box's orientation.
+
+![Bicolor shulker boxes in six orientations](docs/screenshots/bicolor-world-six-orientations.png)
+
+### Original shell artwork, recolored
+
+All 16 dyes are supported. Shells retain the original vanilla texture's outline and details, and box items show both colors in the inventory.
+
+![Dyed vanilla-texture shells and bicolor box items](docs/screenshots/bicolor-inventory.png)
+
+### Animated lid
+
+The lid keeps its color while opening, with the normal shulker box animation.
+
+![Bicolor shulker box with its lid open](docs/screenshots/bicolor-open-lid.png)
+
 ## Installation
 
 Requirements: Java 21, Minecraft Java **1.21.11**, Fabric Loader **0.18.4 or newer**, and Fabric API **0.141.6+1.21.11**.
