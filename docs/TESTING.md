@@ -1,66 +1,48 @@
 # Verification workflow
 
-Changes follow **red → green → regression**: first reproduce a missing or incorrect behavior, implement it, then run the targeted checks and relevant surrounding scenarios. Initial color and item-data tests were compiled before those production classes existed; they failed, then passed after implementation. The shell artwork correction has an additional runtime pixel-level regression assertion.
+Changes follow **red → green → regression**. Tests use the actual Minecraft recipe manager, component prototypes and container implementations.
 
 ## Unit tests
 
-`./gradlew test` uses Fabric Loader JUnit and initializes Minecraft registries for stack/component tests. It covers:
+`./gradlew test` runs seven JUnit tests covering the 17-color palette, ordered pairs, serialization, validation, unknown schemas, and readability of version-1 legacy metadata.
 
-- 17 colors, ordered pairs, inverse pairs and malformed color names;
-- vanilla item identities, shell stackability and all 289 pair encodings;
-- preservation of contents, names and foreign data during recoloring;
-- refusal to reinterpret or delete unknown future metadata.
-
-Loom also attaches the server GameTests to the build/test lifecycle.
+In 26.3, mutable stack prototypes are bound when resources load. Tests of actual stack behavior therefore run as `ItemDataGameTests` on a real server, rather than mocking component prototypes in JUnit.
 
 ## Server GameTests
 
-The project's GameTests use actual recipes loaded from resources, not a duplicate recipe implementation:
+`./gradlew build` runs the project's server GameTests plus Fabric's framework check:
 
-- all 289 pairs in each of three columns: 867 assemblies;
+- 289 color pairs in three columns: 867 assemblies;
 - 17 source shell colors × 16 dyes: 272 dye attempts, including same-color rejection;
 - 272 mixed boxes × 16 dyes: 4,352 recolorings, preserving named container contents;
 - invalid grid shapes and ingredients;
-- placement through `BlockItem`, save/load, drops and replacement;
-- six facings, 27-slot capacity, comparator output and nesting restrictions;
-- real redstone crafter pulses, disabled slots and exact consumption;
-- invalid same-color crafter input consuming nothing;
-- hopper refill of an existing recipe and colored-shell ejection.
-
-There are also Fabric's own framework validation tests; these are reported separately from project scenarios in the validation summary.
+- real placement, save/load, drops and replacement;
+- six facings, 27 slots, comparator output and nesting restrictions;
+- redstone pulses, disabled slots, exact consumption, hopper refill and ejection;
+- vanilla item identities, shell stackability, foreign data preservation and unknown metadata.
 
 ## Production client GameTest
 
-`./gradlew runProductionClientGameTest` loads the same remapped distribution JAR installed on the production server. A separate, non-distributed test helper supplies assertions and screenshots.
+`runProductionClientGameTest` loads the distributable JAR with a separate, non-distributed test helper. It verifies the original shell texture pixel by pixel, rendered colors, all six orientations, lid animation, inventory/hand/dropped rendering, resource reload, chunk unload/reload, and closing/reopening a saved world.
 
-It verifies the original shell texture's silhouette and shading pixel by pixel, color synchronization, all six box orientations, render-state extraction, lid animation, inventory rendering, hand/dropped rendering, resource reload, chunk unload/reload, and save/close/reopen with contents intact.
+It then starts a loopback dedicated server with two actual Minecraft clients: the modded test client and Mojang's official client, launched directly without Fabric or mods. It checks simultaneous connection, initial colors, updates, dimension travel and reconnection.
 
-An in-process dedicated server then hosts the real modded client alongside a separate Node vanilla-protocol client with no Fabric or mod code. It checks concurrent players, initial color state, subsequent color updates, dimension travel and reconnect.
+The production harness uses Fabric's documented `disableNetworkSynchronizer=true` setting, because the vanilla client does not participate in Fabric's internal test synchronization. The official client is launched in offline developer mode only against an isolated loopback server; no real account or credentials are used.
 
-The production helper contains only the client test entrypoint. Server GameTest annotations remain in the development GameTest harness; loading their published annotation defaults in an intermediary production environment caused an enum annotation error during setup. This separation keeps that test-framework issue out of the production client test and the shipped mod. Production network tests also apply Fabric’s documented `disableNetworkSynchronizer=true` workaround, because the additional protocol client does not participate in the test framework’s internal synchronizer.
+## Vanilla client and server restart
 
-## Mod-free client against a production server
+`tools/vanilla_smoke.py` runs the Fabric launcher with the distributable JAR. It verifies the exact version-1 color envelope used by the 1.21.11 mod, and a container holding 37 diamonds. An official unmodded client joins and receives marked items through vanilla packets. The script stops the server completely, restarts the same world, checks colors and contents, and connects the vanilla client again.
 
-```sh
-python3 tools/vanilla_smoke.py
-```
+This is a vanilla connection and persistence check. Manual crafting and inventory clicks over the network are no longer driven by Mineflayer, which did not support 26.3 at the time of this port. Crafting and container behavior remain covered by the real server GameTests. The obsolete Node probe is retained in the 0.1.0 Git tag, not the current build.
 
-Starts an actual Fabric launcher with the distribution JAR on loopback, then drives manual inventory clicks through Mineflayer using protocol 1.21.11. It dyes two shells, assembles a box at a table, reads tooltip metadata, places it, deposits 37 diamonds, breaks/picks up/replaces it, stops the server, restarts the same world, checks contents/colors, and recolors the recovered box.
+The launcher obtains Minecraft and its libraries from Mojang's official release metadata and verifies download checksums. It never loads Fabric or this mod into the vanilla client.
 
-This is a **protocol-client** test, not a screenshot test of the official vanilla GUI. It loads neither Fabric nor this mod in the client. The probe explicitly sends Minecraft's `player_loaded` acknowledgement after chunks arrive, because the pinned Mineflayer release does not yet send it automatically.
+## Modded client on a vanilla server
 
-Reports include the SHA-256 of the tested mod. `--phase restart` is available for targeted diagnosis against the already-created disposable world.
+`tools/vanilla_server_client.py` launches Mojang's server.jar directly, without Fabric or mods. It connects a client carrying the universal mod and verifies that an ordinary shulker box has no bicolor metadata.
 
-## Modded client against a vanilla server
+## CI and evidence
 
-```sh
-python3 tools/vanilla_server_client.py
-```
+GitHub Actions runs resource generation checks, the build, server and client GameTests, the vanilla client restart scenario, and the actual vanilla-server scenario. It stores the distributable separately from test helpers, logs and screenshots.
 
-Runs Mojang's `server.jar` directly, with no Fabric and no mods, then connects a production client carrying the universal mod. The client verifies that the ordinary shulker block has no bicolor state and captures a screenshot.
-
-## Evidence and CI
-
-GitHub Actions runs generated-resource checks, unit/server tests, production graphics, both protocol smoke phases and the actual vanilla-server compatibility scenario. It stores the one distributable JAR separately from logs, reports and screenshots. No test helper or Node dependency is bundled in the distributable.
-
-Tests use disposable worlds and fixed loopback ports 25576–25578. Stop other test runs using those ports before running the suite. Graphical tests need OpenGL; headless Linux uses Xvfb and Mesa. The local validation record distinguishes executed checks from CI configuration; remote CI is only confirmed once its run has finished successfully.
+Fixed loopback ports 25576–25578 are reserved for these disposable tests. Headless graphics use Xvfb and Mesa/OpenGL. Validation records distinguish local runs from completed GitHub Actions runs.

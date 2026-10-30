@@ -37,7 +37,7 @@ public class BicolorGameTests {
     static ItemStack dye(ShellColor color) { return new ItemStack(BuiltInRegistries.ITEM.getValue(Identifier.withDefaultNamespace(color.id() + "_dye"))); }
     static ItemStack craft(GameTestHelper h, CraftingInput grid) {
         return h.getLevel().recipeAccess().getRecipeFor(RecipeType.CRAFTING, grid, h.getLevel())
-            .map(r -> r.value().assemble(grid, h.getLevel().registryAccess())).orElse(ItemStack.EMPTY);
+            .map(r -> r.value().assemble(grid)).orElse(ItemStack.EMPTY);
     }
     static CraftingInput grid(int column, ShellColor lid, ShellColor base) {
         var slots = new ArrayList<ItemStack>(); for (int i = 0; i < 9; i++) slots.add(ItemStack.EMPTY);

@@ -22,9 +22,11 @@ The shells keep their original Minecraft texture, and boxes open just as usual.
 
 ## Installation
 
-For **Minecraft Java 1.21.11** with **Fabric** and **Fabric API**.
+For **Minecraft Java 26.3** with **Fabric** and **Fabric API**.
 
 [Download the mod](https://github.com/ShamanTramp/Bicolor-Shulkerboxes/releases/latest) and drop the `.jar` into your `mods` folder. Install it on your client for singleplayer, or on your server for multiplayer.
+
+Still playing on **1.21.11**? Use [version 0.1.0](https://github.com/ShamanTramp/Bicolor-Shulkerboxes/releases/tag/v0.1.0).
 
 ### Playing with friends
 

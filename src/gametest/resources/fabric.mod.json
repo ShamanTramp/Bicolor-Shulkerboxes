@@ -6,7 +6,8 @@
   "environment": "*",
   "entrypoints": {
     "fabric-gametest": [
-      "dev.shaman.bicolor.BicolorGameTests"
+      "dev.shaman.bicolor.BicolorGameTests",
+      "dev.shaman.bicolor.ItemDataGameTests"
     ],
     "fabric-client-gametest": [
       "dev.shaman.bicolor.BicolorClientTests"

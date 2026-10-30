@@ -8,7 +8,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.ShulkerBoxRenderer;
 import net.minecraft.client.renderer.blockentity.state.ShulkerBoxRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.level.block.entity.ShulkerBoxBlockEntity;
 import net.minecraft.world.phys.Vec3;
@@ -17,7 +17,7 @@ import org.jspecify.annotations.Nullable;
 public final class BicolorBoxRenderer extends ShulkerBoxRenderer {
     private final TwoToneRenderer twoTone;
     public BicolorBoxRenderer(BlockEntityRendererProvider.Context context) {
-        super(context); twoTone = new TwoToneRenderer(context.entityModelSet(), context.materials());
+        super(context); twoTone = new TwoToneRenderer(context.entityModelSet(), context.sprites());
     }
     public static final class State extends ShulkerBoxRenderState { public @Nullable ColorPair colors; }
     @Override public ShulkerBoxRenderState createRenderState() { return new State(); }

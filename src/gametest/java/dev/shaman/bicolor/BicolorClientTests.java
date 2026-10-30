@@ -57,14 +57,14 @@ public class BicolorClientTests implements FabricClientGameTest {
                 player.getInventory().setItem(18, ItemData.box(new ColorPair(ShellColor.NATURAL, ShellColor.GREEN)));
                 player.containerMenu.broadcastChanges();
             });
-            world.getClientWorld().waitForChunksRender();
+            world.getConnection().waitForChunksRender();
             waitForPair(context);
             context.runOnClient(mc -> {
                 var entity = (ShulkerBoxBlockEntity)mc.level.getBlockEntity(BOX);
                 var renderer = mc.getBlockEntityRenderDispatcher().<ShulkerBoxBlockEntity, net.minecraft.client.renderer.blockentity.state.ShulkerBoxRenderState>getRenderer(entity);
                 check(renderer instanceof BicolorBoxRenderer, "Bicolor renderer not installed");
                 var state = renderer.createRenderState();
-                renderer.extractRenderState(entity, state, 0, mc.gameRenderer.getMainCamera().position(), null);
+                renderer.extractRenderState(entity, state, 0, net.minecraft.world.phys.Vec3.ZERO, null);
                 check(PAIR.equals(((BicolorBoxRenderer.State)state).colors), "Render state lost pair");
             });
             context.takeScreenshot("bicolor-world-six-orientations");
@@ -76,7 +76,7 @@ public class BicolorClientTests implements FabricClientGameTest {
             context.waitFor(mc -> ((ShulkerBoxBlockEntity)mc.level.getBlockEntity(BOX)).getProgress(0) > .95f);
             context.takeScreenshot("bicolor-open-lid");
             world.getServer().runOnServer(server -> ((ShulkerBoxBlockEntity)server.overworld().getBlockEntity(BOX)).stopOpen(server.getPlayerList().getPlayers().getFirst()));
-            context.runOnClient(mc -> mc.setScreen(new InventoryScreen(mc.player)));
+            context.setScreen(() -> new InventoryScreen(net.minecraft.client.Minecraft.getInstance().player));
             context.waitTicks(3);
             context.takeScreenshot("bicolor-inventory");
             context.setScreen(() -> null);
@@ -98,11 +98,11 @@ public class BicolorClientTests implements FabricClientGameTest {
             world.getServer().runCommand("tp @a 1600 -60 1600");
             context.waitFor(mc -> mc.level.getBlockEntity(BOX) == null, 1200);
             world.getServer().runCommand("tp @a 3 -60 7 180 12");
-            world.getClientWorld().waitForChunksRender();
+            world.getConnection().waitForChunksRender();
             waitForPair(context);
         }
         try (var reopened = save.open()) {
-            reopened.getClientWorld().waitForChunksRender();
+            reopened.getConnection().waitForChunksRender();
             waitForPair(context);
             reopened.getServer().runOnServer(server -> {
                 var entity = (ShulkerBoxBlockEntity)server.overworld().getBlockEntity(BOX);
@@ -130,15 +130,16 @@ public class BicolorClientTests implements FabricClientGameTest {
         if (System.getProperty("bicolor.projectDir") == null) return;
         java.util.Properties props = new java.util.Properties();
         props.setProperty("max-players", "2"); props.setProperty("server-ip", "127.0.0.1");
+        props.setProperty("white-list", "false"); // Disposable loopback server; 26.3 defaults to an allowlist.
         props.setProperty("server-port", "25578"); props.setProperty("view-distance", "2");
         props.setProperty("level-name", "mixed-player-world");
         Process guest = null;
         try (var server = context.worldBuilder().createServer(props)) {
             try (var connection = server.connect()) {
-                var path = java.nio.file.Path.of(System.getProperty("bicolor.projectDir"), "tests", "vanilla", "hold.cjs");
-                guest = new ProcessBuilder("node", path.toString(), "25578").redirectErrorStream(true)
+                var path = java.nio.file.Path.of(System.getProperty("bicolor.projectDir"), "tools", "vanilla_client.py");
+                guest = new ProcessBuilder("python3", path.toString(), "--port", "25578", "--username", "VanillaGuest").redirectErrorStream(true)
                     .redirectOutput(java.nio.file.Path.of("vanilla-guest.log").toFile()).start();
-                context.waitFor(mc -> mc.getConnection() != null && mc.getConnection().getOnlinePlayers().size() == 2, 1200);
+                context.waitFor(mc -> mc.getConnection() != null && mc.getConnection().getOnlinePlayers().size() == 2, 4800);
                 server.runOnServer(s -> {
                     ItemStack stack = ItemData.box(PAIR);
                     s.overworld().setBlockAndUpdate(BOX, Block.byItem(stack.getItem()).defaultBlockState());
@@ -146,7 +147,7 @@ public class BicolorClientTests implements FabricClientGameTest {
                     for (var player : s.getPlayerList().getPlayers()) { player.getInventory().setItem(0, stack.copy()); player.containerMenu.broadcastChanges(); }
                 });
                 server.runCommand("tp @a 3 -60 7 180 12");
-                connection.getClientWorld().waitForChunksRender(); waitForPair(context);
+                connection.waitForChunksRender(); waitForPair(context);
                 context.takeScreenshot("mixed-modded-and-vanilla-players");
                 ColorPair changed = new ColorPair(ShellColor.GREEN, ShellColor.BLUE);
                 server.runOnServer(s -> ((ColoredBox)s.overworld().getBlockEntity(BOX)).bicolor$setColors(changed));
@@ -158,7 +159,7 @@ public class BicolorClientTests implements FabricClientGameTest {
                     && mc.level.getBlockEntity(BOX) instanceof ColoredBox box && changed.equals(box.bicolor$getColors()), 1200);
             }
             try (var reconnected = server.connect()) {
-                reconnected.getClientWorld().waitForChunksRender();
+                reconnected.waitForChunksRender();
                 context.waitFor(mc -> mc.level.getBlockEntity(BOX) instanceof ColoredBox box
                     && new ColorPair(ShellColor.GREEN, ShellColor.BLUE).equals(box.bicolor$getColors()), 1200);
             }

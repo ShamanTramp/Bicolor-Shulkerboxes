@@ -8,16 +8,16 @@ import subprocess
 import threading
 import time
 
-ROOT = Path(__file__).resolve().parents[1]
-work = ROOT / 'build/vanilla-server-client'
+from project_config import ROOT, MINECRAFT
+work = ROOT / 'build' / f'vanilla-server-client-{MINECRAFT}'
 work.mkdir(parents=True, exist_ok=True)
-server_jar = ROOT / 'build/vanilla-smoke/server.jar'
+server_jar = ROOT / 'build' / f'vanilla-smoke-{MINECRAFT}' / 'server.jar'
 if not server_jar.exists():
     raise SystemExit('Run tools/vanilla_smoke.py first to obtain the official server.jar')
 shutil.copyfile(server_jar, work / 'server.jar')
 shutil.rmtree(work / 'world', ignore_errors=True)
 (work / 'eula.txt').write_text('eula=true\n')
-props = (ROOT / 'build/vanilla-smoke/server.properties').read_text()
+props = (ROOT / 'build' / f'vanilla-smoke-{MINECRAFT}' / 'server.properties').read_text()
 props = props.replace('server-port=25576', 'server-port=25577').replace('level-name=smoke-world', 'level-name=world')
 props = '\n'.join(line for line in props.splitlines() if not line.startswith(('initial-enabled-packs=', 'initial-disabled-packs='))) + '\ninitial-enabled-packs=vanilla\n'
 (work / 'server.properties').write_text(props)

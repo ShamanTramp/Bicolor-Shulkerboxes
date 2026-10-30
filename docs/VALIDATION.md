@@ -1,41 +1,32 @@
-# Local validation — 29 October 2026
+# Minecraft 26.3 validation — 30 October 2026
 
-Target: Minecraft Java 1.21.11, Fabric Loader 0.18.4, Fabric API 0.141.6+1.21.11, Java 21.
+Target: Minecraft Java 26.3, Fabric Loader 0.20.1, Fabric API 0.165.0+26.3, Java 25.
 
-Distribution: `bicolor-shulkerboxes-0.1.0.jar` (53,758 bytes).
+Distribution: `bicolor-shulkerboxes-0.2.0+mc26.3.jar` (53,683 bytes). The same file is used on servers and optional clients.
 
-SHA-256: `bea26f18fb0e2d13882f568b3e20546a83c576772ffe25050eadb195bc879c6e`.
+SHA-256: `284ea932de19ce8054d060134e02cb0aef8a62e1901385f66a5b606d003a1485`.
 
-## Completed checks
-
-| Check | Result |
+| Check | Local result |
 | --- | --- |
-| Universal artifact contains common and client entrypoints, no test classes | PASS |
-| JUnit tests | 7 passed |
-| Server GameTests | 8 project scenarios + 1 Fabric framework scenario passed |
+| Common and client entrypoints in one JAR; test helpers excluded | PASS |
+| Unit tests | 7 passed |
+| Server GameTests | 12 project scenarios + 1 Fabric framework scenario passed |
 | Recipe matrices | 867 assemblies + 272 shell-dye attempts + 4,352 box recolorings passed |
-| Hopper refill, disabled crafter slots, redstone pulses, ejection and consumption | PASS |
-| Vanilla shell outline, transparency and shading retained pixel by pixel | PASS |
-| Production client: animation, inventory, hand, dropped item, resource reload | PASS |
-| Chunk unload/reload and world close/reopen | PASS |
-| Real modded client + separate mod-free protocol guest simultaneously | PASS |
-| Color update, dimension changes and reconnect | PASS |
-| Mod-free protocol client: manual crafting and real container interactions | PASS |
-| Complete dedicated-server process stop/restart, contents/colors retained, recoloring | PASS |
-| Universal mod installed on client connecting to Mojang server.jar without Fabric/mods | PASS |
+| Stackability, names, contents, foreign data and unknown schemas | PASS |
+| Crafter, disabled slots, pulses, hopper refill and ejection | PASS |
+| Vanilla shell texture pixel silhouette and shading | PASS |
+| Production client rendering, lid animation, inventory, hand and dropped items | PASS |
+| Resource reload, chunk unload/reload, saved-world close/reopen | PASS |
+| Actual modded and official unmodded clients connected simultaneously | PASS |
+| Color updates, dimension travel and reconnect | PASS |
+| Official vanilla client on a production Fabric server | PASS |
+| Version-1 color envelope and 37 diamonds retained after process stop/restart | PASS |
+| Modded client on an official server.jar without Fabric or mods | PASS |
 
-The production graphics test uses the same remapped mod artifact as the dedicated-server smoke test. The latter's report records its checksum. Temporary test helper JARs are separate and are not distributed.
+The official vanilla client is launched directly from Mojang's release binaries and libraries, without Fabric, test mods or this mod. Its downloads are checksum-verified. The server smoke report records the tested mod checksum.
 
-The mod-free client is Mineflayer 4.37.1 speaking vanilla protocol 1.21.11. This verifies protocol compatibility and gameplay interactions, not the official vanilla GUI's pixel appearance. The complementary production client test runs an actual Minecraft GUI against a truly unmodded server.
+Crafting behavior is exercised by Minecraft's actual server recipe manager and crafter. The old Mineflayer network-click test was replaced because that library did not support 26.3. The current vanilla-client check proves connection, marked-item compatibility and persistence; it does not automate crafting clicks in the vanilla GUI.
 
-## Captures
+Screenshots in [the gallery](screenshots/) were refreshed using the 26.3 client. [The 1.21.11 validation record](https://github.com/ShamanTramp/Bicolor-Shulkerboxes/blob/v0.1.0/docs/VALIDATION.md) remains available with release 0.1.0.
 
-- [Original shell texture recolored, and box items](screenshots/bicolor-inventory.png)
-- [Boxes in six orientations](screenshots/bicolor-world-six-orientations.png)
-- [Animated lid](screenshots/bicolor-open-lid.png)
-- [Concurrent modded and mod-free players](screenshots/mixed-modded-and-vanilla-players.png)
-- [Modded client on an actual vanilla server](screenshots/modded-client-on-vanilla-server.png)
-
-## Continuous integration
-
-The checked-in workflow reproduces these checks and uploads the JAR, logs and screenshots. Remote GitHub Actions status is recorded separately once its first run completes; local success does not imply remote success.
+The checked-in GitHub Actions workflow repeats these checks. Remote CI success is reported separately once the run completes.

@@ -1,6 +1,7 @@
 {
-  "jar_sha256": "bea26f18fb0e2d13882f568b3e20546a83c576772ffe25050eadb195bc879c6e",
-  "client": "Mineflayer 4.37.1; vanilla protocol 1.21.11; no Fabric or mod",
+  "minecraft": "26.3",
+  "jar_sha256": "284ea932de19ce8054d060134e02cb0aef8a62e1901385f66a5b606d003a1485",
+  "client": "Official Mojang Minecraft client; no Fabric, no mods",
   "phases": [
     {
       "phase": "create",

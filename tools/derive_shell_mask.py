@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Derive the dye mask from the original 1.21.11 client texture (requires Pillow)."""
+"""Derive the dye mask from the original Minecraft client texture (requires Pillow)."""
 import argparse
 from io import BytesIO
 from pathlib import Path

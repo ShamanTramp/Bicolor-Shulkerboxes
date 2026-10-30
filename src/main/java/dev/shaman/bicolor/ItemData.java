@@ -3,6 +3,8 @@ package dev.shaman.bicolor;
 import java.util.ArrayList;
 import java.util.Optional;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.TranslatableContents;
@@ -27,7 +29,7 @@ public final class ItemData {
     public static ShellColor color(DyeColor dye) {
         return dye == null ? ShellColor.NATURAL : ShellColor.parse(dye.getName()).orElseThrow();
     }
-    public static Item boxItem(ShellColor color) { return ShulkerBoxBlock.getBlockByColor(dye(color)).asItem(); }
+    public static Item boxItem(ShellColor color) { return color == ShellColor.NATURAL ? Items.SHULKER_BOX : BuiltInRegistries.ITEM.getValue(Identifier.withDefaultNamespace(color.id() + "_shulker_box")); }
     public static boolean isBox(ItemStack stack) { return Block.byItem(stack.getItem()) instanceof ShulkerBoxBlock; }
     public static ShellColor shellColor(ItemStack stack) {
         if (!stack.is(Items.SHULKER_SHELL)) return ShellColor.NATURAL;

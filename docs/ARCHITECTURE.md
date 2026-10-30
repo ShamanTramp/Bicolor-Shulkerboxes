@@ -2,7 +2,7 @@
 
 ## A single universal artifact
 
-The main initializer uses common Minecraft classes only. The client initializer and client mixins live in `src/client/` and are marked client-only in `fabric.mod.json`. Loom combines both source sets into the one remapped distribution JAR. Dedicated servers do not initialize the graphics code.
+The main initializer uses common Minecraft classes only. The client initializer and client mixins live in `src/client/` and are marked client-only in `fabric.mod.json`. Loom combines both source sets into the one distribution JAR. Dedicated servers do not initialize the graphics code.
 
 There are no new item, block, component or recipe serializer registry entries. Shells use `minecraft:shulker_shell`. Boxes use the existing shulker box matching their base color. This permits unmodified clients to decode every item and block they receive.
 
@@ -44,6 +44,8 @@ Minecraft remains responsible for slot matching, shift-click handling, ingredien
 
 A local copy of a dyed shell stack selects a bundled tinted item model; no client-only model identifier is written back to inventory or sent by the server. The mask retains the original vanilla texture's alpha and per-pixel shading.
 
-For placed boxes, a renderer captures the color pair alongside vanilla render state. Each half has its own baked model and fixed visibility mask, avoiding cross-contamination during deferred rendering. The transforms, textures and opening movement follow vanilla behavior. The special item renderer uses the same two-half rendering for inventory, hands and dropped entities, and includes the color pair in the item render identity.
+The 26.3 renderer uses vanilla sprite identifiers and sprite getters. Placed boxes use the vanilla directional model transform, while item transforms are supplied by the item model.
+
+For placed boxes, a renderer captures the color pair alongside vanilla render state. Each half has its own baked model and fixed visibility mask, avoiding cross-contamination during deferred rendering. The transforms, textures and opening movement follow vanilla behavior. The generic special-model baking call wraps vanilla shulker renderers without adding a new renderer type to server data. The special item renderer uses the same two-half rendering for inventory, hands and dropped entities, and includes the color pair in the item render identity.
 
 All models and renderer objects are rebuilt by the normal resource reload process. Unmarked vanilla stacks and block entities use the vanilla render path.
